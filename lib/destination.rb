@@ -3,9 +3,10 @@ require 'ox'
 class Destination < ::Ox::Sax
   attr_reader :attrs
   
-  def initialize(node)
+  def initialize(node, output_dir = nil)
     @attrs = {}
     @node = node
+    @output_dir = output_dir
   end
 
   def start_element(name)
@@ -44,6 +45,14 @@ class Destination < ::Ox::Sax
         break
       else
         add_navigations(child_node, child_node.nodes)
+      end
+    end
+  end
+
+  def generate_html
+    if @output_dir
+      File.open("#{@output_dir}/#{@attrs[:name].downcase.gsub(' ', '_')}.html", 'w') do |f|
+        f.write(Template.new(@attrs).render)
       end
     end
   end

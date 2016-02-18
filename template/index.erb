@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Lonely Planet</title>
+    <link href="all.css" media="screen" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="header">
+        <div id="logo"></div>
+        <h1>Lonely Planet: <%= @destination[:name] %></h1>
+      </div>
+
+      <div id="wrapper">
+        <div id="sidebar">
+          <div class="block">
+            <h3>Navigation</h3>
+            <div class="content">
+              <div class="inner">
+                <% if @destination[:super_nav] %>
+                  <div class='mleft5'>
+                    <ul>
+                      <li>
+                        <% file = @destination[:super_nav].downcase.gsub(' ', '_') %>
+                  	    <a href="<%= file %>.html"><%= @destination[:super_nav] %></a>
+                      </li>
+                    </ul>
+                  </div>
+                <% end %>
+                <div class='mleft15'>
+                  <%= @destination[:name] %>
+                </div>
+              	<div class='mleft25'>
+                  <ul>
+                    <% @destination[:sub_nav].each do |location| %>
+                      <li>
+                      	<% file = location.downcase.gsub(' ', '_') %>
+                      	<a href="<%= file %>.html"><%= location %></a>
+                      </li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="main">
+          <div class="block">
+            <div class="secondary-navigation">
+              <ul>
+                <li class="first"><a href="#"><%= @destination[:name] %></a></li>
+              </ul>
+              <div class="clear"></div>
+            </div>
+            <div class="content">
+              <div class="inner">
+          		<h4>Overview</h4>
+          		<p><%= @destination[:overview] %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
