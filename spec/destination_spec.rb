@@ -1,10 +1,11 @@
 require 'spec_helper'
 require 'destination'
+require 'template'
 
 RSpec.describe Destination do
   let(:node) { Node.parse(File.read('spec/fixtures/taxonomy.xml')) }
   let(:destination) {Destination.new(node)}
-
+  
   describe '#start_element' do
     context 'valid' do
       specify do
@@ -33,8 +34,8 @@ RSpec.describe Destination do
         atlas_id: '355064',
         name: 'Africa',
         overview: 'Africa Overview',
-        super_nav: nil,
-        sub_nav: ['South Africa']})
+        super_nav: {},
+        sub_nav: {'355611' => 'South Africa'}})
     end
   end
 
@@ -76,8 +77,8 @@ RSpec.describe Destination do
       specify do
         destination.attr(:atlas_id, '355611')
         destination.add_navigations(nil, node.nodes)
-        expect(destination.attrs[:super_nav]).to eq('Africa')
-        expect(destination.attrs[:sub_nav]).to eq(['Cape Town'])
+        expect(destination.attrs[:super_nav]).to eq({'355064' => 'Africa'})
+        expect(destination.attrs[:sub_nav]).to eq({'355612' => 'Cape Town'})
       end
     end
 
@@ -87,6 +88,32 @@ RSpec.describe Destination do
         destination.add_navigations(nil, node.nodes)
         expect(destination.attrs[:super_nav]).to be_nil
         expect(destination.attrs[:sub_nav]).to be_nil
+      end
+    end
+  end
+
+  describe '#generate_html' do
+    let(:file) {'spec/fixtures/output/355064.html'}
+
+    before do
+      File.open('spec/fixtures/destinations.xml') do |f|
+        Ox.sax_parse(destination, f)
+      end
+    end
+
+    context 'valid' do
+      specify do
+        destination.output_dir = 'spec/fixtures/output'
+        destination.generate_html
+        expect(File).to exist(file)
+        File.delete(file)
+      end
+    end
+
+    context 'invalid' do
+      specify do
+        destination.generate_html
+        expect(File).not_to exist(file)
       end
     end
   end

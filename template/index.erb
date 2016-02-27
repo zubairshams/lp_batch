@@ -19,12 +19,12 @@
             <h3>Navigation</h3>
             <div class="content">
               <div class="inner">
-                <% if @destination[:super_nav] %>
+                <% unless @destination[:super_nav].empty? %>
                   <div class='mleft5'>
                     <ul>
                       <li>
-                        <% file = @destination[:super_nav].downcase.gsub(' ', '_') %>
-                  	    <a href="<%= file %>.html"><%= @destination[:super_nav] %></a>
+                        <% file = @destination[:super_nav].keys.first %>
+                  	    <a href="<%= file %>.html"><%= @destination[:super_nav][file] %></a>
                       </li>
                     </ul>
                   </div>
@@ -34,9 +34,8 @@
                 </div>
               	<div class='mleft25'>
                   <ul>
-                    <% @destination[:sub_nav].each do |location| %>
+                    <% @destination[:sub_nav].each do |file, location| %>
                       <li>
-                      	<% file = location.downcase.gsub(' ', '_') %>
                       	<a href="<%= file %>.html"><%= location %></a>
                       </li>
                     <% end %>
